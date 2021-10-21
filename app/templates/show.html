@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Offer for {{offer.recipient_name}}</h1>
+    <div>
+        Author: {{author.name }} <br>
+        Created: {{ offer.created }} <br>
+        <a href="{{ url_for('download', filename=offer.filename) }}">View offer</a>
+    </div>
+{% endblock %}

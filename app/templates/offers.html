@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <div>
+        <a href="{{ url_for('add_offer') }}">Add offer</a>
+    </div>
+    <h2>You offers:</h2>
+    {% for offer in offers %}
+    <div>
+        <p>
+            Uploaded: {{ offer.created }} <br>
+            Recipient: {{ offer.recipient_name }} <br>
+            Link: <a href="{{ url_for('show', filename=offer.filename) }}">{{ url_for('show', filename=offer.filename, _external=True) }}</a><br>
+            Opened: {% if offer.opened %} {{ offer.opened }} {% else %} None {% endif %}<br>
+            <a href="{{ url_for('download', filename=offer.filename, mode='silent') }}">View offer file</a>
+        </p></div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,23 @@
+PRAGMA foreign_keys=ON;
+
+DROP TABLE IF EXISTS offers;
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE offers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    opened TIMESTAMP DEFAULT NULL,
+    recipient_name TEXT NOT NULL,
+    filename TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    is_admin INTEGER NOT NULL DEFAULT 0
+    );

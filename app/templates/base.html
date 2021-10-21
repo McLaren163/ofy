@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+    <title>{{title}} - OFY</title>
+    {% else %}
+    <title>Welcome to OFY</title>
+    {% endif %}
+</head>
+<body>
+    <div>
+        OFY - Offer for You |
+        <a href="{{ url_for('index') }}">Home</a>
+        {% if session['email'] %}
+        <a href="{{ url_for('offers') }}">Offers</a>
+        {% endif %}
+        {% if session['is_admin'] %}
+        <a href="{{ url_for('users') }}">Users</a>
+        {% endif %}
+        {% if session['email'] and session['username'] %}
+        |
+        <a href="{{ url_for('profile') }}">{{ session['username'] }}</a>
+        <a href="{{ url_for('logout') }}">Loguot</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </div>
+    <hr>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+    {% for message in messages %}
+        <li>{{ message }} </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>
