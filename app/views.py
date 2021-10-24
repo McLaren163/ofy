@@ -197,8 +197,8 @@ def show(filename):
 def download(filename):
     if not request.args.get('mode') == 'silent':
         db_update_opentime_by_filename(filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    print('Download from ' + filepath)
-    return send_from_directory(app.config.get('DOWNLOAD_FOLDER'), filename)
+    path = os.path.abspath(app.config['UPLOAD_FOLDER'])
+    print('Send from directory: ' + str(path))
+    return send_from_directory(path, filename)
 
 
