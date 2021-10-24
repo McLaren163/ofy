@@ -3,8 +3,9 @@ from app import app
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == 'init_db':
-        from app.utils import db_init
-        db_init()
-        exit()
-    app.run(debug=True)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'init':
+            from app.utils import db_init
+            db_init()
+        if sys.argv[1] == 'run':
+            app.run(debug=True)
