@@ -5,7 +5,7 @@ from flask import render_template, flash, redirect, request, abort, send_from_di
 from app import app
 from .utils import get_unique_filename, allowed_file, db_add_offer, db_get_user_by_email, db_get_by_filename, \
     db_login, db_get_offers_for_user, db_get_all_users, db_add_user, db_update_opentime_by_filename, \
-    user_is_login, user_is_admin, db_get_user_by_id, db_delete_user
+    user_is_login, user_is_admin, db_get_user_by_id, db_delete_user, email_send_with_thread
 
 
 @app.route('/')
@@ -80,13 +80,17 @@ def add_user():
     if not user_is_admin():
         return abort(403)
     if request.method == 'POST':
-        name = request.form.get('name')
-        password = request.form.get('password')
         email = request.form.get('email')
-        admin = request.form.get('is_admin')
         if db_get_user_by_email(email):
             flash('User with email: ' + email + ' exist.')
             return redirect(request.url)
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        if password != confirm_password:
+            flash('Password not confirm!')
+            return redirect(request.url)
+        name = request.form.get('name')
+        admin = request.form.get('is_admin')
         db_add_user(name,
                     email,
                     password,
@@ -99,6 +103,7 @@ def add_user():
 
 @app.route('/delete_user/<int:user_id>')
 def delete_user(user_id):
+    # TODO delete this metod
     if not user_is_admin():
         return abort(403)
     db_delete_user(user_id)
@@ -196,9 +201,17 @@ def show(filename):
 @app.route('/download/<path:filename>')
 def download(filename):
     if not request.args.get('mode') == 'silent':
+        offer = db_get_by_filename(filename)
+        author = db_get_user_by_id(offer['user_id'])
+
         db_update_opentime_by_filename(filename)
+
+        message = 'Offer opened\n' + url_for('download',
+                                             filename=filename,
+                                             mode='silent',
+                                             _external=True)
+        email_send_with_thread((author['email'],), message)
     path = os.path.abspath(app.config['UPLOAD_FOLDER'])
-    print('Send from directory: ' + str(path))
     return send_from_directory(path, filename)
 
 

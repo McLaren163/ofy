@@ -11,3 +11,8 @@ MAX_CONTENT_LENGTH = 5 * 1000 * 1000
 ADMIN_NAME = os.environ.get('ADMIN_NAME') or 'Admin'
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@ofy.ru'
 ADMIN_PASS = os.environ.get('ADMIN_PASS') or 'admin'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_LOGIN = 'ofy_sender@mail.ru'
+EMAIL_PASS = 'ysJW3xsPZnMVTpBz44C0'
+

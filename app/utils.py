@@ -2,8 +2,11 @@ import sqlite3
 import uuid
 import hashlib
 import datetime
+import smtplib
+from email.message import EmailMessage
 from flask import session
 from app import app
+from threading import Thread
 
 
 def get_unique_filename(filename):
@@ -176,3 +179,20 @@ def db_login(email, password):
 
 def db_user_is_exist(email):
     return True if db_get_user_by_email(email) else None
+
+
+def email_send_notice(to, message):
+    msg = EmailMessage()
+    msg['Subject'] = 'OFY - Notification'
+    msg['From'] = app.config.get('EMAIL_LOGIN')
+    msg['To'] = ', '.join(to)
+    msg.set_content(message)
+    print(msg)
+    server = smtplib.SMTP_SSL(app.config.get('EMAIL_HOST'), app.config.get('EMAIL_PORT'))
+    server.login(app.config.get('EMAIL_LOGIN'), app.config.get('EMAIL_PASS'))  # user & password
+    server.send_message(msg)
+    server.quit()
+
+def email_send_with_thread(to, message):
+    thread = Thread(target=email_send_notice, args=(to, message))
+    thread.start()
